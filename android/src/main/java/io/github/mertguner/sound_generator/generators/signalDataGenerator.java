@@ -70,18 +70,26 @@ public class signalDataGenerator {
         createOneCycleData();
     }
 
+
+    // Generates new data base on the selected generator
+    // 
+    // It generates the wave values on demand storing them in the 
+    // backgroundBuffer. The variables ph and modularPh are basically 
+    // the phases of the waves. They are increased until the reach pi
+    // and then they are reseted.
     private void updateData() {
         creatingNewData = true;
         for (int i = 0; i < bufferSamplesSize; i++) {
+            // This step only smooths the transition after
+            // changing the frequencies.
             oldFrequency += ((frequency - oldFrequency) * smoothStep);
             oldModularFrequency += ((modularFrequency - oldModularFrequency) * smoothStep);
+
             backgroundBuffer[i] = generator.getValue(ph, _2Pi, modularPh);
             ph += (oldFrequency * phCoefficient);
             modularPh += (oldModularFrequency * phCoefficient);
 
-            //performance of this block is higher than ph %= _2Pi;
-            // ifBlock  Test score =  2,470ns
-            // ModBlock Test score = 27,025ns
+            
             if (ph > _2Pi) {
                 ph -= _2Pi;
             }
@@ -109,7 +117,13 @@ public class signalDataGenerator {
     public void createOneCycleData() {
         createOneCycleData(false);
     }
+    
 
+    // Generates data for one cycle base on the frequency
+    // 
+    // For the case of sinusoidal FM, it checks witch frequency generates
+    // a bigger size and uses that size.
+    // * This is only used to plot the wave
     public void createOneCycleData(boolean force) {
         if (generator == null || (!autoUpdateOneCycleSample && !force))
             return;
