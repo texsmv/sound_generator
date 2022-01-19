@@ -1,7 +1,7 @@
 package io.github.mertguner.sound_generator.generators;
 
 public class triangleGenerator extends baseGenerator {
-    public short getValue(double phase, double period) {
+    public short getValue(double phase, double period, double secondPhase) {
         if(phase <= (period / 4))
             return (short) (Short.MAX_VALUE * (((4 * phase) / Math.PI) - 1.));
         else if(phase <= (period / 2))

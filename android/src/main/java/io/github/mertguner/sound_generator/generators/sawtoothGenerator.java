@@ -1,7 +1,7 @@
 package io.github.mertguner.sound_generator.generators;
 
 public class sawtoothGenerator extends baseGenerator {
-    public short getValue(double phase, double period) {
+    public short getValue(double phase, double period, double secondPhase) {
         if (phase < (period / 2))
             return (short)(Short.MAX_VALUE * (((2. * phase) / Math.PI) - 1));
         else

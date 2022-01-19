@@ -15,6 +15,7 @@ public class signalDataGenerator {
     private float smoothStep = 1f / (float) sampleRate * 20f;
 
     private float frequency = 50;
+    private float modularFrequency = 7.83f;
     private baseGenerator generator = new sinusoidalGenerator();
 
     private short[] backgroundBuffer;
@@ -22,9 +23,12 @@ public class signalDataGenerator {
     private List<Integer> oneCycleBuffer = new ArrayList<>();
     private int bufferSamplesSize;
     private float ph = 0;
+    private float modularPh = 0;
     private float oldFrequency = 50;
+    private float oldModularFrequency = 7.83f;
     private boolean creatingNewData = false;
     private boolean autoUpdateOneCycleSample = false;
+    private boolean isModular = false;
 
     public boolean isAutoUpdateOneCycleSample() { return autoUpdateOneCycleSample; }
     public void setAutoUpdateOneCycleSample(boolean autoUpdateOneCycleSample) { this.autoUpdateOneCycleSample = autoUpdateOneCycleSample; }
@@ -39,8 +43,9 @@ public class signalDataGenerator {
     public baseGenerator getGenerator() {
         return generator;
     }
-    public void setGenerator(baseGenerator generator) {
+    public void setGenerator(baseGenerator generator, boolean isModular) {
         this.generator = generator;
+        this.isModular = isModular;
         createOneCycleData();
     }
 
@@ -49,6 +54,10 @@ public class signalDataGenerator {
     }
     public void setFrequency(float frequency) {
         this.frequency = frequency;
+        createOneCycleData();
+    }
+    public void setModularFrequency(float frequency) {
+        this.modularFrequency = frequency;
         createOneCycleData();
     }
 
@@ -65,14 +74,20 @@ public class signalDataGenerator {
         creatingNewData = true;
         for (int i = 0; i < bufferSamplesSize; i++) {
             oldFrequency += ((frequency - oldFrequency) * smoothStep);
-            backgroundBuffer[i] = generator.getValue(ph, _2Pi);
+            oldModularFrequency += ((modularFrequency - oldModularFrequency) * smoothStep);
+            backgroundBuffer[i] = generator.getValue(ph, _2Pi, modularPh);
             ph += (oldFrequency * phCoefficient);
+            modularPh += (oldModularFrequency * phCoefficient);
 
             //performance of this block is higher than ph %= _2Pi;
             // ifBlock  Test score =  2,470ns
             // ModBlock Test score = 27,025ns
             if (ph > _2Pi) {
                 ph -= _2Pi;
+            }
+
+            if (modularPh > _2Pi) {
+                modularPh -= _2Pi;
             }
         }
         creatingNewData = false;
@@ -99,13 +114,20 @@ public class signalDataGenerator {
         if (generator == null || (!autoUpdateOneCycleSample && !force))
             return;
 
-        int size = Math.round(_2Pi / (frequency * phCoefficient));
+        int size;
+
+        if(isModular){
+            int firstSize = Math.round(_2Pi / (frequency * phCoefficient));
+            int secondSize = Math.round(_2Pi / (modularFrequency * phCoefficient));
+            size = Math.max(firstSize, secondSize);
+        }else{
+            size = Math.round(_2Pi / (frequency * phCoefficient));
+        }
 
         oneCycleBuffer.clear();
-        for (int i = 0; i < size; i++) {
-            oneCycleBuffer.add((int)generator.getValue((frequency * phCoefficient) * (float) i, _2Pi));
+        for (int i = 0; i <= size; i++) {
+            oneCycleBuffer.add((int)generator.getValue((frequency * phCoefficient) * (float) i, _2Pi, (modularFrequency * phCoefficient) * (float) i));
         }
-        oneCycleBuffer.add((int)generator.getValue(0, _2Pi));
         getOneCycleDataHandler.setData(oneCycleBuffer);
     }
 }

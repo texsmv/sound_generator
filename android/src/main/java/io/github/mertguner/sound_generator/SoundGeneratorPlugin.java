@@ -68,6 +68,9 @@ public class SoundGeneratorPlugin implements FlutterPlugin, MethodCallHandler {
     }else if (call.method.equals("setFrequency")) {
       double frequency = call.argument("frequency");
       soundGenerator.setFrequency((float)frequency);
+    }else if (call.method.equals("setModularFrequency")) {
+      double modularFrequency = call.argument("modularFrequency");
+      soundGenerator.setModularFrequency((float)modularFrequency);
     }else if (call.method.equals("setWaveform")) {
       String waveType = call.argument("waveType");
       soundGenerator.setWaveform(WaveTypes.valueOf(waveType));

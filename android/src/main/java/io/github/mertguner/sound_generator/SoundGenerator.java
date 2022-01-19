@@ -9,6 +9,7 @@ import android.os.Build;
 import io.github.mertguner.sound_generator.generators.sawtoothGenerator;
 import io.github.mertguner.sound_generator.generators.signalDataGenerator;
 import io.github.mertguner.sound_generator.generators.sinusoidalGenerator;
+import io.github.mertguner.sound_generator.generators.sinusoidalFMGenerator;
 import io.github.mertguner.sound_generator.generators.squareWaveGenerator;
 import io.github.mertguner.sound_generator.generators.triangleGenerator;
 import io.github.mertguner.sound_generator.handlers.isPlayingStreamHandler;
@@ -51,6 +52,11 @@ public class SoundGenerator {
             generator.setFrequency(v);
     }
 
+    public void setModularFrequency(float v) {
+        if (generator != null)
+            generator.setModularFrequency(v);
+    }
+
     public float getFrequency() {
         if (generator != null)
             return generator.getFrequency();
@@ -83,13 +89,15 @@ public class SoundGenerator {
         this.waveType = waveType;
 
         if (waveType.equals(WaveTypes.SINUSOIDAL))
-            generator.setGenerator(new sinusoidalGenerator());
+            generator.setGenerator(new sinusoidalGenerator(), false);
         else if (waveType.equals(WaveTypes.TRIANGLE))
-            generator.setGenerator(new triangleGenerator());
+            generator.setGenerator(new triangleGenerator(), false);
         else if (waveType.equals(WaveTypes.SQUAREWAVE))
-            generator.setGenerator(new squareWaveGenerator());
+            generator.setGenerator(new squareWaveGenerator(), false);
         else if (waveType.equals(WaveTypes.SAWTOOTH))
-            generator.setGenerator(new sawtoothGenerator());
+            generator.setGenerator(new sawtoothGenerator(), false);
+        else if (waveType.equals(WaveTypes.SINUSOIDAL_FM))
+            generator.setGenerator(new sinusoidalFMGenerator(), true);
     }
 
     public boolean init(int sampleRate) {
