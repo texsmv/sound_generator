@@ -92,6 +92,12 @@ class SoundGenerator {
         "setFrequency", <String, dynamic>{"frequency": frequency});
   }
 
+  /// Set second Frequency
+  static void setModularFrequency(double frequency) async {
+    await _channel.invokeMethod("setModularFrequency",
+        <String, dynamic>{"modularFrequency": frequency});
+  }
+
   /// Set Balance Range from -1 to 1
   static void setBalance(double balance) async {
     await _channel
