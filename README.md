@@ -20,7 +20,7 @@ $w_m = f_m 2 \pi$
 
 If you want to undertand how the code works, you may want to start with the (sinusoidal wave)[https://ccrma.stanford.edu/~jos/mdft/Sinusoids.html]:
 
-A simple example in java for this formula can be found in: https://riptutorial.com/android/example/28432/generate-tone-of-a-specific-frequency , you can also check https://stackoverflow.com/questions/2413426/playing-an-arbitrary-tone-with-android
+A simple example in java for this formula can be found in: https://riptutorial.com/android/example/28432/generate-tone-of-a-specific-frequency , in this example note[0] is the frequency. You can also check https://stackoverflow.com/questions/2413426/playing-an-arbitrary-tone-with-android
 
 Although these examples may be useful to understand how to generate a tone with a duration in seconds, this repository generates continually the tones.
 Check the comentaries I'm leaving in the file android/src/main/java/io/github/mertguner/sound_generator/generators/signalDataGenerator.java , mainly in the methods updateData and createOneCycleData
